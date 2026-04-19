@@ -2,8 +2,6 @@
 
 Mobile application for field researchers to capture water sample images, record GPS coordinates and environmental metadata, run on-device microplastic analysis via an Arduino UNO Q edge device, and sync results to a backend for aggregation and reporting.
 
-**This is an MVP scaffold**. Core mobile functionality (navigation, forms, camera capture, GPS, BLE hardware communication, local storage, and backend sync) is implemented. ML inference on the edge device is the primary remaining integration point.
-
 ## Quick Start
 
 ```bash
