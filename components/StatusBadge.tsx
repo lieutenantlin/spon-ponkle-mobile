@@ -13,6 +13,7 @@ const COPY: Record<UploadStatus, string> = {
   pending: "Queued",
   uploading: "Uploading",
   uploaded: "Synced",
+  synced: "Synced",
   failed: "Failed",
 };
 
@@ -20,6 +21,7 @@ const COLORS: Record<UploadStatus, { bg: string; fg: string }> = {
   pending: { bg: "#FFF4DB", fg: "#8A6200" },
   uploading: { bg: "#DDEFFE", fg: "#0B6E7F" },
   uploaded: { bg: "#DDF5E6", fg: Colors.light.success },
+  synced: { bg: "#DDF5E6", fg: Colors.light.success },
   failed: { bg: "#FCE4E4", fg: Colors.light.danger },
 };
 

@@ -3,13 +3,15 @@ import { StyleSheet, Text, View } from "react-native";
 import { Droplets } from "lucide-react-native";
 import Colors from "@/constants/colors";
 import { Radius, Spacing, FontSize, FontWeight } from "@/constants/theme";
-import { MicroplasticUnit } from "@/types";
+import { InferenceStatus, MicroplasticUnit } from "@/types";
 
 interface Props {
-  estimate: number;
-  unit: MicroplasticUnit;
-  confidence: number;
+  estimate?: number;
+  unit?: MicroplasticUnit;
+  confidence?: number;
   modelVersion?: string;
+  status?: InferenceStatus;
+  summary?: string;
 }
 
 function levelForEstimate(v: number): { label: string; color: string } {
@@ -23,32 +25,49 @@ export default function ResultCard({
   unit,
   confidence,
   modelVersion,
+  status = "pending",
+  summary,
 }: Props) {
-  const level = levelForEstimate(estimate);
+  const level = estimate !== undefined ? levelForEstimate(estimate) : null;
   return (
     <View style={styles.card}>
       <View style={styles.headerRow}>
         <View style={styles.iconCircle}>
           <Droplets color={Colors.light.tint} size={22} />
         </View>
-        <View style={[styles.levelPill, { backgroundColor: level.color + "22" }]}>
-          <View style={[styles.levelDot, { backgroundColor: level.color }]} />
-          <Text style={[styles.levelText, { color: level.color }]}>
-            {level.label}
-          </Text>
-        </View>
+        {level ? (
+          <View style={[styles.levelPill, { backgroundColor: level.color + "22" }]}>
+            <View style={[styles.levelDot, { backgroundColor: level.color }]} />
+            <Text style={[styles.levelText, { color: level.color }]}>
+              {level.label}
+            </Text>
+          </View>
+        ) : (
+          <View style={[styles.levelPill, { backgroundColor: Colors.light.amber + "22" }]}>
+            <View style={[styles.levelDot, { backgroundColor: Colors.light.amber }]} />
+            <Text style={[styles.levelText, { color: Colors.light.amber }]}>
+              {status === "pending" ? "Pending" : "Unavailable"}
+            </Text>
+          </View>
+        )}
       </View>
 
-      <Text style={styles.estimate}>{estimate.toFixed(1)}</Text>
-      <Text style={styles.unit}>{unit}</Text>
+      <Text style={styles.estimate}>
+        {estimate !== undefined ? estimate.toFixed(1) : "Awaiting model"}
+      </Text>
+      <Text style={styles.unit}>
+        {estimate !== undefined ? unit : summary ?? "The capture is saved locally and waiting for the analysis model."}
+      </Text>
 
       <View style={styles.divider} />
 
       <View style={styles.metaRow}>
         <View style={styles.metaCell}>
-          <Text style={styles.metaLabel}>Confidence</Text>
+          <Text style={styles.metaLabel}>{estimate !== undefined ? "Confidence" : "Status"}</Text>
           <Text style={styles.metaValue}>
-            {Math.round(confidence * 100)}%
+            {estimate !== undefined && confidence !== undefined
+              ? `${Math.round(confidence * 100)}%`
+              : status}
           </Text>
         </View>
         <View style={styles.metaCell}>

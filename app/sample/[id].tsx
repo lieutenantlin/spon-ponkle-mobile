@@ -47,6 +47,8 @@ export default function SampleDetailScreen() {
           unit={sample.unit}
           confidence={sample.confidence}
           modelVersion={sample.modelVersion}
+          status={sample.inferenceStatus}
+          summary={sample.inferenceSummary}
         />
 
         <View style={styles.card}>
@@ -72,6 +74,15 @@ export default function SampleDetailScreen() {
           {sample.deviceId ? (
             <Row label="Device" value={sample.deviceId} />
           ) : null}
+          {sample.sequenceId ? (
+            <Row label="Sequence" value={sample.sequenceId} />
+          ) : null}
+          {sample.captureOutcome ? (
+            <Row label="Capture outcome" value={sample.captureOutcome} />
+          ) : null}
+          {sample.captureReason ? (
+            <Row label="Capture reason" value={sample.captureReason} />
+          ) : null}
           <View style={styles.statusRow}>
             <Text style={styles.label}>Sync</Text>
             <StatusBadge status={sample.uploadStatus} small />
@@ -87,9 +98,9 @@ export default function SampleDetailScreen() {
 
         {sample.uploadStatus !== "uploaded" ? (
           <SecondaryButton
-            title={isSyncing ? "Uploading…" : "Upload to backend"}
+            title={isSyncing ? "Checking…" : "Backend upload not configured"}
             onPress={() => syncSample(sample)}
-            disabled={isSyncing}
+            disabled
             icon={<Upload size={16} color={Colors.light.text} />}
           />
         ) : null}

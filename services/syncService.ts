@@ -2,13 +2,13 @@ import { WaterSample } from "@/types";
 import { apiClient } from "./apiClient";
 import { sampleService } from "./sampleService";
 
-// TODO: real sync with backend (retry, queueing, offline resilience).
+// Backend upload remains intentionally unconfigured in this phase.
 export const syncService = {
   async uploadSample(sample: WaterSample): Promise<WaterSample> {
-    console.log("[syncService] uploading", sample.id);
+    console.log("[syncService] upload skipped, backend not configured", sample.id);
     await sampleService.update(sample.id, { uploadStatus: "uploading" });
     const res = await apiClient.post("/ingest/sample", sample);
-    const nextStatus = res.ok ? "uploaded" : "failed";
+    const nextStatus = res.ok ? "pending" : "failed";
     const updated = await sampleService.update(sample.id, {
       uploadStatus: nextStatus,
     });

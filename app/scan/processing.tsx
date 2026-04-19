@@ -69,15 +69,15 @@ export default function ProcessingScreen() {
           </View>
         </View>
 
-        <Text style={styles.title}>Analyzing sample</Text>
+        <Text style={styles.title}>Packaging sample</Text>
         <Text style={styles.subtitle}>
-          Streaming image to the edge device and running inference…
+          Saving the capture, device telemetry, and metadata locally. The microplastic analysis model is still pending integration.
         </Text>
 
         <View style={styles.steps}>
-          <Step label="Uploading image" done />
-          <Step label="Running MPNet model" active />
-          <Step label="Computing confidence" />
+          <Step label="Saving capture image" done />
+          <Step label="Packaging device snapshot" active />
+          <Step label="Marking analysis as pending" />
         </View>
       </View>
     </SafeAreaView>

@@ -1,6 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { WaterSample } from "@/types";
-import { MOCK_SAMPLES } from "@/mock-data/samples";
 
 const KEY = "mp_samples_v1";
 
@@ -8,13 +7,12 @@ async function readAll(): Promise<WaterSample[]> {
   try {
     const raw = await AsyncStorage.getItem(KEY);
     if (!raw) {
-      await AsyncStorage.setItem(KEY, JSON.stringify(MOCK_SAMPLES));
-      return [...MOCK_SAMPLES];
+      return [];
     }
-    return JSON.parse(raw) as WaterSample[];
+    return (JSON.parse(raw) as WaterSample[]).map(normalizeStoredSample);
   } catch (e) {
     console.log("[sampleService] readAll error", e);
-    return [...MOCK_SAMPLES];
+    return [];
   }
 }
 
@@ -55,3 +53,12 @@ export const sampleService = {
     await AsyncStorage.removeItem(KEY);
   },
 };
+
+function normalizeStoredSample(sample: WaterSample): WaterSample {
+  return {
+    ...sample,
+    inferenceStatus:
+      sample.inferenceStatus ??
+      (sample.microplasticEstimate !== undefined ? "mocked" : "pending"),
+  };
+}

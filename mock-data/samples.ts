@@ -12,6 +12,7 @@ export const MOCK_SAMPLES: WaterSample[] = [
     unit: "particles/L",
     confidence: 0.91,
     modelVersion: "mpnet-edge-0.3.2",
+    inferenceStatus: "mocked",
     notes: "Calm surf, mid-tide. Sampled 1.5m from shoreline.",
     imageUri:
       "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800",
@@ -32,6 +33,7 @@ export const MOCK_SAMPLES: WaterSample[] = [
     unit: "particles/L",
     confidence: 0.86,
     modelVersion: "mpnet-edge-0.3.2",
+    inferenceStatus: "mocked",
     notes: "Slight onshore wind, visible surface film.",
     imageUri:
       "https://images.unsplash.com/photo-1439405326854-014607f694d7?w=800",
@@ -52,6 +54,7 @@ export const MOCK_SAMPLES: WaterSample[] = [
     unit: "particles/L",
     confidence: 0.78,
     modelVersion: "mpnet-edge-0.3.2",
+    inferenceStatus: "mocked",
     notes: "Estuary near storm drain outflow.",
     imageUri:
       "https://images.unsplash.com/photo-1468818438311-4bab781ab9b8?w=800",
@@ -72,6 +75,7 @@ export const MOCK_SAMPLES: WaterSample[] = [
     unit: "particles/L",
     confidence: 0.83,
     modelVersion: "mpnet-edge-0.3.1",
+    inferenceStatus: "mocked",
     notes: "Near pier pilings, light foam.",
     imageUri:
       "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800",
@@ -92,6 +96,7 @@ export const MOCK_SAMPLES: WaterSample[] = [
     unit: "particles/L",
     confidence: 0.94,
     modelVersion: "mpnet-edge-0.3.1",
+    inferenceStatus: "mocked",
     notes: "Offshore side of breakwater, clear water.",
     imageUri:
       "https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=800",

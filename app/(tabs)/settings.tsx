@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
 import { Activity, LogOut, Radio, RotateCcw } from "lucide-react-native";
 import ScreenHeader from "@/components/ScreenHeader";
 import PrimaryButton from "@/components/PrimaryButton";
@@ -12,8 +13,9 @@ import { useDevice } from "@/providers/DeviceProvider";
 import { useSamples } from "@/providers/SamplesProvider";
 
 export default function SettingsScreen() {
+  const router = useRouter();
   const { user, logout } = useAuth();
-  const { status, connect, disconnect, busy } = useDevice();
+  const { status } = useDevice();
   const { samples, retryAllFailed, isRetrying } = useSamples();
 
   const queuedCount = samples.filter((sample) => sample.uploadStatus !== "uploaded").length;
@@ -23,7 +25,7 @@ export default function SettingsScreen() {
       <ScreenHeader
         eyebrow="Session"
         title="Settings"
-        subtitle="Inspect the mocked auth session, hardware connection, and sync queue."
+        subtitle="Inspect the local session, BLE hardware connection, and samples waiting for a future backend."
       />
 
       <View style={styles.content}>
@@ -36,36 +38,33 @@ export default function SettingsScreen() {
         <Card
           icon={<Radio size={18} color={Colors.light.tint} />}
           title="Device status"
-          body={status.connected ? status.deviceName ?? "Connected" : "Disconnected"}
+          body={
+            status.connected
+              ? status.controlReady
+                ? status.deviceName ?? "Connected and claimed"
+                : status.deviceName ?? "Connected, claim required"
+              : "Disconnected"
+          }
           footnote={
             status.connected && status.lastSeenAt
               ? `Last seen ${new Date(status.lastSeenAt).toLocaleString()}`
-              : "No active edge device session"
+              : "Use the device setup screen to scan, connect, and claim the UNO Q."
           }
         />
         <Card
           icon={<RotateCcw size={18} color={Colors.light.tint} />}
           title="Sync queue"
           body={`${queuedCount} pending or failed sample${queuedCount === 1 ? "" : "s"}`}
-          footnote="Retry uploads after connectivity recovers."
+          footnote="Backend upload is not configured yet, so samples stay local in this phase."
         />
 
-        {status.connected ? (
-          <SecondaryButton
-            title={busy ? "Disconnecting..." : "Disconnect device"}
-            onPress={() => void disconnect()}
-            disabled={busy}
-          />
-        ) : (
-          <SecondaryButton
-            title={busy ? "Connecting..." : "Connect device"}
-            onPress={() => void connect()}
-            disabled={busy}
-          />
-        )}
+        <SecondaryButton
+          title={status.connected ? "Open device setup" : "Connect device"}
+          onPress={() => router.push("/device" as never)}
+        />
 
         <SecondaryButton
-          title={isRetrying ? "Retrying uploads..." : "Retry queued uploads"}
+          title={isRetrying ? "Checking queue..." : "Re-check queued samples"}
           onPress={() => void retryAllFailed()}
           disabled={isRetrying || queuedCount === 0}
         />

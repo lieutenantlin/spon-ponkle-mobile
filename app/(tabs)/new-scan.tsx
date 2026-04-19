@@ -12,55 +12,56 @@ import { useDevice } from "@/providers/DeviceProvider";
 
 export default function NewScanScreen() {
   const router = useRouter();
-  const { status, connect, busy } = useDevice();
+  const { status } = useDevice();
 
   return (
     <SafeAreaView style={styles.safe} edges={["top"]}>
       <ScreenHeader
         eyebrow="Capture"
         title="Start a new scan"
-        subtitle="Collect a sample image, attach field metadata, and run the mock inference pipeline."
+        subtitle="Let the UNO Q drive the capture sequence, then save the image, telemetry, and field metadata locally."
       />
 
       <View style={styles.content}>
         <View style={styles.card}>
           <Step
             icon={<Camera size={18} color={Colors.light.tint} />}
-            title="1. Capture image"
-            description="Use the camera or photo library to attach a water sample image."
+            title="1. Device-guided capture"
+            description="The UNO Q controls mixing and positioning, then prompts the phone to capture the image at the right phase."
           />
           <Step
             icon={<MapPin size={18} color={Colors.light.tint} />}
             title="2. Add metadata"
-            description="Record location, water source, and optional notes before processing."
+            description="Record location, water source, and optional notes after the device capture finishes."
           />
           <Step
             icon={<Waves size={18} color={Colors.light.tint} />}
-            title="3. Review result"
-            description="Inspect the estimate and save the sample into local history."
+            title="3. Save local result"
+            description="Review the saved sample and device snapshot. The microplastic analysis model is still pending."
           />
         </View>
 
         <View style={styles.statusCard}>
           <Text style={styles.statusLabel}>Edge device</Text>
           <Text style={styles.statusValue}>
-            {status.connected ? status.deviceName ?? "Connected" : "Not connected"}
+            {status.connected
+              ? status.controlReady
+                ? status.deviceName ?? "Connected and claimed"
+                : status.deviceName ?? "Connected, claim required"
+              : "Not connected"}
           </Text>
           <Text style={styles.statusHint}>
             {status.connected
-              ? "You can proceed now. The inference service is mocked, so the flow also works offline."
-              : "Connection is optional for the demo flow, but this reflects the intended hardware pairing state."}
+              ? "The BLE connection is live. The scan flow now follows the UNO Q capture state. Only the analysis model remains mocked."
+              : "Open device setup to scan, connect, and claim the UNO Q before starting the device-owned capture sequence."}
           </Text>
         </View>
 
-        <PrimaryButton title="Open camera flow" onPress={() => router.push("/scan/capture")} />
-        {!status.connected ? (
-          <SecondaryButton
-            title={busy ? "Connecting..." : "Connect mock device"}
-            onPress={() => void connect()}
-            disabled={busy}
-          />
-        ) : null}
+        <PrimaryButton title="Start device capture" onPress={() => router.push("/scan/capture")} />
+        <SecondaryButton
+          title={status.connected ? "Review device setup" : "Open device setup"}
+          onPress={() => router.push("/device" as never)}
+        />
       </View>
     </SafeAreaView>
   );

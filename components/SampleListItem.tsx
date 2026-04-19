@@ -42,8 +42,14 @@ function SampleListItem({ sample, onPress }: Props) {
         </View>
         <View style={styles.metaRow}>
           <Text style={styles.value}>
-            {sample.microplasticEstimate.toFixed(1)}{" "}
-            <Text style={styles.unit}>{sample.unit}</Text>
+            {sample.microplasticEstimate !== undefined ? (
+              <>
+                {sample.microplasticEstimate.toFixed(1)}{" "}
+                <Text style={styles.unit}>{sample.unit}</Text>
+              </>
+            ) : (
+              "Awaiting model"
+            )}
           </Text>
           <Text style={styles.dot}>·</Text>
           <Text style={styles.date}>{formatShortDate(sample.capturedAt)}</Text>

@@ -35,10 +35,15 @@ export default function DashboardScreen() {
 
   const latestSamples = samples.slice(0, 3);
   const pendingCount = samples.filter((sample) => sample.uploadStatus !== "uploaded").length;
-  const avgEstimate = samples.length
+  const estimatedSamples = samples.filter(
+    (sample) => sample.microplasticEstimate !== undefined
+  );
+  const avgEstimate = estimatedSamples.length
     ? (
-        samples.reduce((sum, sample) => sum + sample.microplasticEstimate, 0) /
-        samples.length
+        estimatedSamples.reduce(
+          (sum, sample) => sum + (sample.microplasticEstimate ?? 0),
+          0
+        ) / estimatedSamples.length
       ).toFixed(1)
     : "0.0";
 
@@ -60,7 +65,7 @@ export default function DashboardScreen() {
           <Text style={styles.heroEyebrow}>Today&apos;s snapshot</Text>
           <Text style={styles.heroValue}>{avgEstimate} particles/L</Text>
           <Text style={styles.heroBody}>
-            Average concentration across {samples.length} recorded samples in local storage.
+            Average concentration across {estimatedSamples.length} modeled samples in local storage. Newly captured device runs stay pending until the analysis model is available.
           </Text>
           <View style={styles.heroActions}>
             <PrimaryButton
@@ -82,8 +87,19 @@ export default function DashboardScreen() {
           <MetricCard
             icon={<Radio size={18} color={Colors.light.tint} />}
             label="Device"
-            value={status.connected ? "Connected" : "Offline"}
-            hint={status.deviceName ?? "No edge device paired"}
+            value={
+              status.connected
+                ? status.controlReady
+                  ? "Ready"
+                  : "Needs claim"
+                : "Offline"
+            }
+            hint={
+              status.connected
+                ? status.deviceName ??
+                  "Connected. Open device setup if this phone still needs to claim control."
+                : "No edge device paired"
+            }
           />
           <MetricCard
             icon={<Upload size={18} color={Colors.light.tint} />}
@@ -127,7 +143,7 @@ export default function DashboardScreen() {
           <EmptyState
             icon={<Waves size={28} color={Colors.light.tint} />}
             title="No samples yet"
-            message="Run a scan to generate your first mock reading and populate the dashboard."
+            message="Run a device-guided capture to save your first local sample and telemetry snapshot."
             action={
               <PrimaryButton
                 title="Capture sample"

@@ -43,15 +43,25 @@ export default function ResultScreen() {
       unit: result.unit,
       confidence: result.confidence,
       modelVersion: result.modelVersion,
+      inferenceStatus: result.status,
+      inferenceSummary: result.summary,
       notes: draft.metadata.notes,
-      imageUri: draft.imageUri,
+      imageUri: draft.imageUri ?? "",
+      imageUris: draft.imageUris,
       uploadStatus: "pending",
       deviceId: device.deviceId,
+      peripheralId: device.peripheralId,
+      sequenceId: draft.captureSession?.sequenceId,
+      captureOutcome: draft.captureSession?.outcome,
+      captureReason: draft.captureSession?.reason,
+      telemetrySnapshot: device.lastTelemetry ?? null,
+      healthSnapshot: device.lastHealthEvent ?? null,
+      deviceInfoSnapshot: device.deviceInfo,
       waterSource: draft.metadata.waterSource,
       temperatureC: draft.metadata.temperatureC,
       phLevel: draft.metadata.phLevel,
     };
-  }, [result, draft, device.deviceId]);
+  }, [result, draft, device]);
 
   useEffect(() => {
     (async () => {
@@ -94,7 +104,7 @@ export default function ResultScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.successRow}>
           <CheckCircle2 color={Colors.light.success} size={20} />
-          <Text style={styles.successText}>Analysis complete</Text>
+          <Text style={styles.successText}>Capture saved</Text>
         </View>
 
         <ResultCard
@@ -102,6 +112,8 @@ export default function ResultScreen() {
           unit={result.unit}
           confidence={result.confidence}
           modelVersion={result.modelVersion}
+          status={result.status}
+          summary={result.summary}
         />
 
         {draft.imageUri ? (
@@ -132,6 +144,12 @@ export default function ResultScreen() {
           {sample.phLevel !== undefined ? (
             <MetaRow label="pH" value={sample.phLevel.toString()} />
           ) : null}
+          {sample.sequenceId ? (
+            <MetaRow label="Sequence" value={sample.sequenceId} />
+          ) : null}
+          {sample.captureOutcome ? (
+            <MetaRow label="Capture" value={sample.captureOutcome} />
+          ) : null}
           <View style={styles.syncRow}>
             <Text style={styles.metaLabel}>Sync</Text>
             <StatusBadge status={saved?.uploadStatus ?? "pending"} small />
@@ -141,10 +159,10 @@ export default function ResultScreen() {
         <View style={styles.actions}>
           <SecondaryButton
             title={
-              saved?.uploadStatus === "uploaded" ? "Uploaded" : "Upload now"
+              "Backend upload not configured"
             }
             onPress={onUpload}
-            disabled={!saved || uploading || saved?.uploadStatus === "uploaded"}
+            disabled
             icon={<Upload size={16} color={Colors.light.text} />}
           />
           <PrimaryButton

@@ -65,6 +65,10 @@ function RootLayoutNav() {
         name="sample/[id]"
         options={{ title: "Sample Detail" }}
       />
+      <Stack.Screen
+        name="device"
+        options={{ title: "UNO Q Setup" }}
+      />
     </Stack>
   );
 }

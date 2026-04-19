@@ -34,6 +34,12 @@
           "origin": "https://rork.com/"
         }
       ],
+      [
+        "react-native-ble-plx",
+        {
+          "bluetoothAlwaysPermission": "Allow $(PRODUCT_NAME) to connect to UNO Q BLE devices."
+        }
+      ],
       "expo-font",
       "expo-web-browser"
     ],
