@@ -10,12 +10,37 @@ Mobile application for field researchers to capture water sample images, record 
 # Install dependencies
 bun install
 
-# Run on device/simulator (requires Expo Go or dev client)
+# Run with Metro for simulator/dev client
 bun run start
 
 # Run in web browser (development preview)
 bun run start-web
 ```
+
+## Running On A Physical Phone
+
+There are two different native app modes in this project:
+
+- `bun run start` starts a development server. Any debug/dev-client build installed on your phone expects this server to be running.
+- A release build embeds the JavaScript bundle into the app, so it launches on the phone without Metro.
+
+If you install the app to a phone and see a bare wrapper or a `No development server found` message, you installed a debug/dev-client build.
+
+Use one of these flows instead:
+
+```bash
+# Dev client on a phone: keep Metro running, then open the installed app
+bun run start
+bun run ios:device
+
+# Self-contained iPhone build: embeds the JS bundle
+bun run ios:device:release
+
+# Self-contained Android build: embeds the JS bundle
+bun run android:release
+```
+
+For Bluetooth testing on a real device, prefer the release-device build unless you specifically need live reload and are willing to keep Metro running.
 
 ## Features
 

@@ -10,7 +10,10 @@
     "lint": "expo lint",
     "test": "jest",
     "android": "expo run:android",
-    "ios": "expo run:ios"
+    "android:release": "expo run:android --variant release",
+    "ios": "expo run:ios",
+    "ios:device": "expo run:ios --device",
+    "ios:device:release": "expo run:ios --device --configuration Release"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
